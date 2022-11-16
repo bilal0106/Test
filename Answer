@@ -1,0 +1,21 @@
+import functools
+
+def log(utf8_string, tags):
+    pass
+
+
+def log_on_exception(*tags):
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except Exception as ex:
+                try:
+                    msg = str(ex)
+                except UnicodeError:
+                    msg = unicode(ex).encode("UTF-8")
+                log(msg, tags)
+                raise
+        return wrapper
+    return decorator
